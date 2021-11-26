@@ -31,6 +31,7 @@ import { FormsModule} from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {MatSliderModule} from '@angular/material/slider';
 import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
@@ -63,6 +64,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     MatSelectModule,
     MatSlideToggleModule,
     MatProgressSpinnerModule,
+    MatSliderModule,
     ReactiveFormsModule
   ],
   providers: [
