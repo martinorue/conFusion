@@ -71,6 +71,7 @@ export class DishdetailComponent implements OnInit {
 
   onValueChanged(data?: any) {
     if (!this.feedbackForm) { return; }
+    
     const form = this.feedbackForm;
     for (const field in this.formErrors) {
       if (this.formErrors.hasOwnProperty(field)) {
