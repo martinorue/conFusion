@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { flyInOut } from '../animations/app.animation';
+import { expand, flyInOut, visibility } from '../animations/app.animation';
+import { FeedbackService } from '../services/feedback.service';
 import { Feedback, ContactType } from '../shared/feedback';
 
 @Component({
@@ -12,19 +13,26 @@ import { Feedback, ContactType } from '../shared/feedback';
     'style': 'display: block;'
   },
   animations: [
-    flyInOut()
+    flyInOut(),
+    visibility(),
+    expand()
   ]
 })
 export class ContactComponent implements OnInit {
 
   feedbackForm!: FormGroup;
   feedback!: Feedback;
+  submitFeedback!: Feedback;
   contactType = ContactType;
+  showFeedback = false;
+  showSpinner = false;
+  visibility = 'hide';
+  feedbackErrMess!: string;
 
   @ViewChild('fform') feedbackFormDirective: any;
 
   formErrors: any = {
-    'firsname': '',
+    'firstname': '',
     'lastname': '',
     'telnum': '',
     'email': ''
@@ -52,7 +60,7 @@ export class ContactComponent implements OnInit {
 
   }
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private feedbackService: FeedbackService) {
     this.createForm();
   }
 
@@ -64,7 +72,7 @@ export class ContactComponent implements OnInit {
       firstname: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(25)]],
       lastname: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(25)]],
       telnum: [0, [Validators.required, Validators.pattern]],
-      email: ['', Validators.required, Validators.email],
+      email: ['', [Validators.required, Validators.email]],
       agree: false,
       contacttype: 'None',
       message: ['', Validators.required]
@@ -98,7 +106,7 @@ export class ContactComponent implements OnInit {
 
   onSubmit() {
     this.feedback = this.feedbackForm.value;
-    // this.feedback.firstname = this.pregunta; --> idea para traerme la info de la pregunta
+
     console.log(this.feedback);
     this.feedbackForm.reset({
       firstname: '',
@@ -109,7 +117,26 @@ export class ContactComponent implements OnInit {
       contacttype: 'None',
       message: ''
     });
+    this.saveFeedback(this.feedback);
+    //this.showForm = false;
+    //mostrar spinner
+    //this.showSpinner
+    //mostrar datos por 5 segundos
+    //this.showFeedback
+    //volver al formulario vacío
+
     this.feedbackFormDirective.resetForm();
+  }
+
+  saveFeedback(feedback: Feedback) {
+    this.feedbackService.submitFeedback(feedback).subscribe(feedback => this.submitFeedback = feedback,
+      errmess => this.feedbackErrMess = <any>errmess);
+
+    setTimeout(() => {
+      this.visibility = 'shown';
+    }, 5000);
+
+
   }
 
 }
